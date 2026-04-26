@@ -29,11 +29,11 @@ dylint_linting::dylint_library!();
 #[unsafe(no_mangle)]
 pub fn register_lints(_sess: &rustc_session::Session, lint_store: &mut rustc_lint::LintStore) {
     lint_store.register_lints(&[
-        turbofish_collect::STYLE_RUST_AKU,
+        turbofish_collect::PREFER_COLLECT_TURBOFISH,
         minimal_imports::MINIMAL_IMPORTS,
         literal_suffix::LITERAL_SUFFIX,
     ]);
-    lint_store.register_late_pass(|_| Box::new(turbofish_collect::StyleRustAku));
+    lint_store.register_late_pass(|_| Box::new(turbofish_collect::PreferCollectTurbofish));
     lint_store.register_late_pass(|_| Box::new(minimal_imports::MinimalImports));
     lint_store.register_late_pass(|_| Box::new(literal_suffix::LiteralSuffix));
 }

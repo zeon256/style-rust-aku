@@ -11,14 +11,14 @@ declare_lint! {
     /// ### What it does
     /// Checks for explicit type annotations on `let` bindings that use `Iterator::collect`,
     /// and suggests using the turbofish syntax instead.
-    pub STYLE_RUST_AKU,
+    pub PREFER_COLLECT_TURBOFISH,
     Warn,
     "Use turbofish for collect() instead of type annotations"
 }
 
-declare_lint_pass!(StyleRustAku => [STYLE_RUST_AKU]);
+declare_lint_pass!(PreferCollectTurbofish => [PREFER_COLLECT_TURBOFISH]);
 
-impl<'tcx> LateLintPass<'tcx> for StyleRustAku {
+impl<'tcx> LateLintPass<'tcx> for PreferCollectTurbofish {
     fn check_local(&mut self, cx: &LateContext<'tcx>, local: &'tcx LetStmt<'tcx>) {
         let Some(ty) = local.ty else { return; };
         let Some(init) = local.init else { return; };
@@ -39,7 +39,7 @@ impl<'tcx> LateLintPass<'tcx> for StyleRustAku {
 
         span_lint_and_then(
             cx,
-            STYLE_RUST_AKU,
+            PREFER_COLLECT_TURBOFISH,
             local.span,
             "use turbofish `collect::<T>()` instead of explicit type annotation",
             |diag| {

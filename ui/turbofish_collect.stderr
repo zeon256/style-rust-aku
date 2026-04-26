@@ -4,7 +4,7 @@ warning: use turbofish `collect::<T>()` instead of explicit type annotation
 LL |     let x: Vec<u32> = data.into_iter().collect();
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
-   = note: `#[warn(style_rust_aku)]` on by default
+   = note: `#[warn(prefer_collect_turbofish)]` on by default
 help: use turbofish here
    |
 LL -     let x: Vec<u32> = data.into_iter().collect();
