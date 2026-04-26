@@ -36,11 +36,10 @@ impl<'tcx> LateLintPass<'tcx> for LiteralSuffix {
 
         let ExprKind::Lit(lit) = init.kind else { return; };
 
-        let is_unsuffixed = match lit.node {
-            LitKind::Int(_, LitIntType::Unsuffixed) => true,
-            LitKind::Float(_, LitFloatType::Unsuffixed) => true,
-            _ => false,
-        };
+        let is_unsuffixed = matches!(
+            lit.node,
+            LitKind::Int(_, LitIntType::Unsuffixed) | LitKind::Float(_, LitFloatType::Unsuffixed)
+        );
 
         if !is_unsuffixed { return; }
 
