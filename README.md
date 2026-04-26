@@ -45,7 +45,7 @@ libraries = [
     # { path = "../style-rust-aku" }
     
     # Or pull directly from git:
-    { git = "https://github.com/YOUR_GITHUB_USERNAME/style-rust-aku", branch = "main" }
+    { git = "https://github.com/zeon256/style-rust-aku", branch = "main" }
 ]
 ```
 
