@@ -1,5 +1,5 @@
 warning: use turbofish `collect::<T>()` instead of explicit type annotation
-  --> $DIR/main.rs:3:5
+  --> $DIR/turbofish_collect.rs:3:5
    |
 LL |     let x: Vec<u32> = data.into_iter().collect();
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -12,7 +12,7 @@ LL +     let x = data.into_iter().collect::<Vec<u32>>();
    |
 
 warning: use turbofish `collect::<T>()` instead of explicit type annotation
-  --> $DIR/main.rs:10:5
+  --> $DIR/turbofish_collect.rs:10:5
    |
 LL |     let mut z: Vec<u32> = data3.into_iter().collect();
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

@@ -1,0 +1,51 @@
+warning: fully qualified path `std::io::Result` is too long (>= 3 segments)
+  --> $DIR/minimal_imports.rs:2:13
+   |
+LL |     let _a: std::io::Result<()> = Ok(());
+   |             ^^^^^^^^^^^^^^^^^^^
+   |
+   = help: consider adding `use std::io;` and using `io::Result` instead
+   = note: `#[warn(minimal_imports)]` on by default
+
+warning: fully qualified path `std::result::Result` is too long (>= 3 segments)
+  --> $DIR/minimal_imports.rs:3:13
+   |
+LL |     let _b: std::result::Result<(), ()> = Ok(());
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: consider adding `use std::result;` and using `result::Result` instead
+
+warning: fully qualified path `std::sync::atomic::AtomicUsize` is too long (>= 3 segments)
+  --> $DIR/minimal_imports.rs:4:46
+   |
+LL |     let _c: std::sync::atomic::AtomicUsize = std::sync::atomic::AtomicUsize::new(0);
+   |                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: consider adding `use std::sync::atomic;` and using `atomic::AtomicUsize` instead
+
+warning: fully qualified path `std::sync::atomic::AtomicUsize` is too long (>= 3 segments)
+  --> $DIR/minimal_imports.rs:4:13
+   |
+LL |     let _c: std::sync::atomic::AtomicUsize = std::sync::atomic::AtomicUsize::new(0);
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: consider adding `use std::sync::atomic;` and using `atomic::AtomicUsize` instead
+
+warning: fully qualified path `std::fmt::Error` is too long (>= 3 segments)
+  --> $DIR/minimal_imports.rs:5:31
+   |
+LL |     let _d: std::fmt::Error = std::fmt::Error;
+   |                               ^^^^^^^^^^^^^^^
+   |
+   = help: consider adding `use std::fmt;` and using `fmt::Error` instead
+
+warning: fully qualified path `std::fmt::Error` is too long (>= 3 segments)
+  --> $DIR/minimal_imports.rs:5:13
+   |
+LL |     let _d: std::fmt::Error = std::fmt::Error;
+   |             ^^^^^^^^^^^^^^^
+   |
+   = help: consider adding `use std::fmt;` and using `fmt::Error` instead
+
+warning: 6 warnings emitted
+
