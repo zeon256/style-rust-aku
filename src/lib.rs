@@ -23,6 +23,7 @@ extern crate rustc_session;
 pub mod turbofish_collect;
 pub mod minimal_imports;
 pub mod literal_suffix;
+pub mod prefer_vec_macro;
 
 dylint_linting::dylint_library!();
 
@@ -32,10 +33,12 @@ pub fn register_lints(_sess: &rustc_session::Session, lint_store: &mut rustc_lin
         turbofish_collect::PREFER_COLLECT_TURBOFISH,
         minimal_imports::MINIMAL_IMPORTS,
         literal_suffix::LITERAL_SUFFIX,
+        prefer_vec_macro::PREFER_VEC_MACRO,
     ]);
     lint_store.register_late_pass(|_| Box::new(turbofish_collect::PreferCollectTurbofish));
     lint_store.register_late_pass(|_| Box::new(minimal_imports::MinimalImports));
     lint_store.register_late_pass(|_| Box::new(literal_suffix::LiteralSuffix));
+    lint_store.register_late_pass(|_| Box::new(prefer_vec_macro::PreferVecMacro));
 }
 
 #[test]
