@@ -1,6 +1,6 @@
 use clippy_utils::diagnostics::span_lint_and_help;
 use rustc_hir::{HirId, ItemKind, Node, Path};
-use rustc_lint::{LateContext, LateLintPass, LintContext};
+use rustc_lint::{LateContext, LateLintPass};
 use rustc_session::{declare_lint, declare_lint_pass};
 
 declare_lint! {
@@ -25,11 +25,10 @@ impl<'tcx> LateLintPass<'tcx> for MinimalImports {
 
         // We use parent_hir_node or try hir_node directly
         let node = cx.tcx.hir_node(hir_id);
-        if let Node::Item(item) = node {
-            if let ItemKind::Use(..) = item.kind {
+        if let Node::Item(item) = node
+            && let ItemKind::Use(..) = item.kind {
                 return;
             }
-        }
         
         let path_str = path.segments.iter()
             .map(|s| s.ident.as_str())
