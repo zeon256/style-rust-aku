@@ -22,6 +22,7 @@ extern crate rustc_session;
 
 pub mod turbofish_collect;
 pub mod minimal_imports;
+pub mod literal_suffix;
 
 dylint_linting::dylint_library!();
 
@@ -30,9 +31,11 @@ pub fn register_lints(_sess: &rustc_session::Session, lint_store: &mut rustc_lin
     lint_store.register_lints(&[
         turbofish_collect::STYLE_RUST_AKU,
         minimal_imports::MINIMAL_IMPORTS,
+        literal_suffix::LITERAL_SUFFIX,
     ]);
     lint_store.register_late_pass(|_| Box::new(turbofish_collect::StyleRustAku));
     lint_store.register_late_pass(|_| Box::new(minimal_imports::MinimalImports));
+    lint_store.register_late_pass(|_| Box::new(literal_suffix::LiteralSuffix));
 }
 
 #[test]

@@ -1,0 +1,39 @@
+warning: use suffixed literal instead of explicit type annotation
+  --> $DIR/literal_suffix.rs:2:5
+   |
+LL |     let _x: f32 = 0.0;
+   |     ^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(literal_suffix)]` on by default
+help: use a suffixed literal
+   |
+LL -     let _x: f32 = 0.0;
+LL +     let _x = 0.0f32;
+   |
+
+warning: use suffixed literal instead of explicit type annotation
+  --> $DIR/literal_suffix.rs:3:5
+   |
+LL |     let _y: u32 = 42;
+   |     ^^^^^^^^^^^^^^^^^
+   |
+help: use a suffixed literal
+   |
+LL -     let _y: u32 = 42;
+LL +     let _y = 42u32;
+   |
+
+warning: use suffixed literal instead of explicit type annotation
+  --> $DIR/literal_suffix.rs:4:5
+   |
+LL |     let _z: i64 = 0;
+   |     ^^^^^^^^^^^^^^^^
+   |
+help: use a suffixed literal
+   |
+LL -     let _z: i64 = 0;
+LL +     let _z = 0i64;
+   |
+
+warning: 3 warnings emitted
+
