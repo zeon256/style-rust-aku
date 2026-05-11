@@ -9,7 +9,14 @@ A collection of custom, opinionated Rust style lints built using [Dylint](https:
 | **`prefer_collect_turbofish`** | Enforces the use of turbofish syntax for `Iterator::collect()` instead of explicit `let` type annotations.<br><br>**Bad:** `let x: Vec<u32> = iter.collect();`<br>**Good:** `let x = iter.collect::<Vec<u32>>();` | Yes |
 | **`literal_suffix`** | Enforces the use of suffixed numeric literals over explicit type annotations.<br><br>**Bad:** `let x: f32 = 0.0;`<br>**Good:** `let x = 0.0f32;` | Yes |
 | **`minimal_imports`** | Prevents deeply nested, fully-qualified inline paths (>= 3 segments) and suggests bringing them into scope with `use`.<br><br>**Bad:** `let x: std::io::Result<()> = ...`<br>**Good:** `use std::io; let x: io::Result<()> = ...` | No |
-| **`prefer_vec_macro`** | Enforces the use of `vec![]` over `Vec::new()` (unless turbofish is used like `Vec::<u32>::new()`).<br><br>**Bad:** `let mut v = Vec::new();`<br>**Good:** `let mut v = vec![];` | Yes |
+| **`prefer_vec_macro`** | Enforces the use of `vec![]` over `Vec::new()` for non-mutable initializers (unless turbofish is used like `Vec::<u32>::new()`).<br><br>**Bad:** `let v: Vec<u32> = Vec::new();`<br>**Good:** `let v: Vec<u32> = vec![];` | Yes |
+
+## Behavior Notes
+
+These lints are intentionally conservative around generated code:
+
+- `minimal_imports` skips macro/proc-macro generated paths, root-marker paths, and underscore-prefixed helper paths such as `_serde::...`.
+- `prefer_vec_macro` skips mutable local initializers such as `let mut values = Vec::new();`, since those are commonly accumulator vectors that are filled later.
 
 ## Prerequisites
 
@@ -37,20 +44,31 @@ cargo dylint --all --fix
 
 To enforce these lints in your own Rust projects, you need to configure your workspace to pull in this Dylint library.
 
-Add the following to your project's root `Cargo.toml` (or `dylint.toml`):
+For local development, point the consuming project at this checkout:
 
 ```toml
 [workspace.metadata.dylint]
 libraries = [
-    # Use a relative/absolute path if working locally:
-    # { path = "../style-rust-aku" }
-    
-    # Or pull directly from git:
+    { path = "../style-rust-aku" }
+]
+```
+
+Or pull the lints from Git:
+
+```toml
+[workspace.metadata.dylint]
+libraries = [
     { git = "https://github.com/zeon256/style-rust-aku", branch = "main" }
 ]
 ```
 
 Then, run `cargo dylint --all` in your project's directory.
+
+To test a local checkout without changing the consuming project's `Cargo.toml`, run:
+
+```sh
+cargo dylint --path ../style-rust-aku --all
+```
 
 ## VS Code Integration
 

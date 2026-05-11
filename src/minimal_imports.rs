@@ -1,7 +1,9 @@
 use clippy_utils::diagnostics::span_lint_and_help;
+use clippy_utils::is_from_proc_macro;
 use rustc_hir::{HirId, ItemKind, Node, Path};
-use rustc_lint::{LateContext, LateLintPass};
+use rustc_lint::{LateContext, LateLintPass, LintContext};
 use rustc_session::{declare_lint, declare_lint_pass};
+use rustc_span::symbol::kw;
 
 declare_lint! {
     /// ### What it does
@@ -19,18 +21,41 @@ impl<'tcx> LateLintPass<'tcx> for MinimalImports {
             return;
         }
 
-        if path.span.from_expansion() {
+        if path.span.from_expansion()
+            || path.span.in_external_macro(cx.sess().source_map())
+            || is_from_proc_macro(cx, path)
+        {
+            return;
+        }
+
+        if path
+            .segments
+            .first()
+            .is_some_and(|segment| segment.ident.name == kw::PathRoot)
+        {
+            return;
+        }
+
+        // Derive macros commonly synthesize helper paths like `_serde::...` with field spans.
+        if path
+            .segments
+            .iter()
+            .any(|segment| segment.ident.as_str().starts_with('_'))
+        {
             return;
         }
 
         // We use parent_hir_node or try hir_node directly
         let node = cx.tcx.hir_node(hir_id);
         if let Node::Item(item) = node
-            && let ItemKind::Use(..) = item.kind {
-                return;
-            }
-        
-        let path_str = path.segments.iter()
+            && let ItemKind::Use(..) = item.kind
+        {
+            return;
+        }
+
+        let path_str = path
+            .segments
+            .iter()
             .map(|s| s.ident.as_str())
             .collect::<Vec<_>>()
             .join("::");
@@ -40,7 +65,7 @@ impl<'tcx> LateLintPass<'tcx> for MinimalImports {
             .map(|s| s.ident.as_str())
             .collect::<Vec<_>>()
             .join("::");
-            
+
         let last_mod = path.segments[path.segments.len() - 2].ident.as_str();
         let item_name = path.segments.last().unwrap().ident.as_str();
         let replacement = format!("{}::{}", last_mod, item_name);
@@ -49,9 +74,15 @@ impl<'tcx> LateLintPass<'tcx> for MinimalImports {
             cx,
             MINIMAL_IMPORTS,
             path.span,
-            format!("fully qualified path `{}` is too long (>= 3 segments)", path_str),
+            format!(
+                "fully qualified path `{}` is too long (>= 3 segments)",
+                path_str
+            ),
             None,
-            format!("consider adding `use {};` and using `{}` instead", use_path, replacement),
+            format!(
+                "consider adding `use {};` and using `{}` instead",
+                use_path, replacement
+            ),
         );
     }
 }

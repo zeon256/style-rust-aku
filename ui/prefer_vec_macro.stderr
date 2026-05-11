@@ -7,19 +7,13 @@ LL |     let _a: Vec<i32> = Vec::new();
    = note: `#[warn(prefer_vec_macro)]` on by default
 
 warning: consider using the `vec![]` macro
-  --> $DIR/prefer_vec_macro.rs:3:18
-   |
-LL |     let mut _b = Vec::new();
-   |                  ^^^^^^^^^^ help: replace with: `vec![]`
-
-warning: consider using the `vec![]` macro
-  --> $DIR/prefer_vec_macro.rs:10:27
+  --> $DIR/prefer_vec_macro.rs:12:27
    |
 LL |     let _d: Vec<String> = std::vec::Vec::new();
    |                           ^^^^^^^^^^^^^^^^^^^^ help: replace with: `vec![]`
 
 warning: fully qualified path `std::vec::Vec` is too long (>= 3 segments)
-  --> $DIR/prefer_vec_macro.rs:10:27
+  --> $DIR/prefer_vec_macro.rs:12:27
    |
 LL |     let _d: Vec<String> = std::vec::Vec::new();
    |                           ^^^^^^^^^^^^^
@@ -27,5 +21,5 @@ LL |     let _d: Vec<String> = std::vec::Vec::new();
    = help: consider adding `use std::vec;` and using `vec::Vec` instead
    = note: `#[warn(minimal_imports)]` on by default
 
-warning: 4 warnings emitted
+warning: 3 warnings emitted
 

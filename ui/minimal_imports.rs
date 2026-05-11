@@ -6,5 +6,18 @@ fn main() {
 
     use std::io;
     // This should NOT trigger (only 2 segments)
-    let _e: io::Result<()> = Ok(()); 
+    let _e: io::Result<()> = Ok(());
+
+    // This should NOT trigger (underscore-prefixed macro helper path)
+    let _f = _serde::de::SeqAccess::next_element();
+}
+
+mod _serde {
+    pub mod de {
+        pub struct SeqAccess;
+
+        impl SeqAccess {
+            pub fn next_element() {}
+        }
+    }
 }

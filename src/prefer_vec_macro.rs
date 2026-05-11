@@ -1,8 +1,9 @@
 use clippy_utils::diagnostics::span_lint_and_sugg;
+use clippy_utils::is_from_proc_macro;
 use clippy_utils::is_path_diagnostic_item;
 use rustc_errors::Applicability;
-use rustc_hir::{Expr, ExprKind, QPath};
-use rustc_lint::{LateContext, LateLintPass};
+use rustc_hir::{BindingMode, Expr, ExprKind, Node, PatKind, QPath, TyKind};
+use rustc_lint::{LateContext, LateLintPass, LintContext};
 use rustc_session::{declare_lint, declare_lint_pass};
 use rustc_span::sym;
 
@@ -24,19 +25,25 @@ impl<'tcx> LateLintPass<'tcx> for PreferVecMacro {
                 let has_turbofish = match func.kind {
                     ExprKind::Path(QPath::Resolved(_, path)) => {
                         path.segments.iter().any(|seg| seg.args.is_some())
-                    },
+                    }
                     ExprKind::Path(QPath::TypeRelative(ty, segment)) => {
-                        segment.args.is_some() || match ty.kind {
-                            rustc_hir::TyKind::Path(QPath::Resolved(_, path)) => {
-                                path.segments.iter().any(|seg| seg.args.is_some())
+                        segment.args.is_some()
+                            || match ty.kind {
+                                TyKind::Path(QPath::Resolved(_, path)) => {
+                                    path.segments.iter().any(|seg| seg.args.is_some())
+                                }
+                                _ => true, // Conservatively skip if complex type is used
                             }
-                            _ => true, // Conservatively skip if complex type is used
-                        }
-                    },
+                    }
                     _ => false,
                 };
 
-                if !has_turbofish && !expr.span.from_expansion() {
+                if !has_turbofish
+                    && !expr.span.from_expansion()
+                    && !expr.span.in_external_macro(cx.sess().source_map())
+                    && !is_from_proc_macro(cx, expr)
+                    && !is_mutable_local_init(cx, expr)
+                {
                     span_lint_and_sugg(
                         cx,
                         PREFER_VEC_MACRO,
@@ -50,4 +57,13 @@ impl<'tcx> LateLintPass<'tcx> for PreferVecMacro {
             }
         }
     }
+}
+
+fn is_mutable_local_init(cx: &LateContext<'_>, expr: &Expr<'_>) -> bool {
+    let Node::LetStmt(local) = cx.tcx.parent_hir_node(expr.hir_id) else {
+        return false;
+    };
+
+    local.init.is_some_and(|init| init.hir_id == expr.hir_id)
+        && matches!(local.pat.kind, PatKind::Binding(BindingMode::MUT, ..))
 }
