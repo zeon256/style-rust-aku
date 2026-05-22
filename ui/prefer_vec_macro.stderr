@@ -7,6 +7,12 @@ LL |     let _a: Vec<i32> = Vec::new();
    = note: `#[warn(prefer_vec_macro)]` on by default
 
 warning: consider using the `vec![]` macro
+  --> $DIR/prefer_vec_macro.rs:5:26
+   |
+LL |     let mut validators = Vec::new();
+   |                          ^^^^^^^^^^ help: replace with: `vec![]`
+
+warning: consider using the `vec![]` macro
   --> $DIR/prefer_vec_macro.rs:12:27
    |
 LL |     let _d: Vec<String> = std::vec::Vec::new();
@@ -21,5 +27,5 @@ LL |     let _d: Vec<String> = std::vec::Vec::new();
    = help: consider adding `use std::vec;` and using `vec::Vec` instead
    = note: `#[warn(minimal_imports)]` on by default
 
-warning: 3 warnings emitted
+warning: 4 warnings emitted
 

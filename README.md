@@ -4,19 +4,20 @@ A collection of custom, opinionated Rust style lints built using [Dylint](https:
 
 ## Available Lints
 
-| Lint | Description | Auto-fixable |
-|------|-------------|:---:|
-| **`prefer_collect_turbofish`** | Enforces the use of turbofish syntax for `Iterator::collect()` instead of explicit `let` type annotations.<br><br>**Bad:** `let x: Vec<u32> = iter.collect();`<br>**Good:** `let x = iter.collect::<Vec<u32>>();` | Yes |
-| **`literal_suffix`** | Enforces the use of suffixed numeric literals over explicit type annotations.<br><br>**Bad:** `let x: f32 = 0.0;`<br>**Good:** `let x = 0.0f32;` | Yes |
-| **`minimal_imports`** | Prevents deeply nested, fully-qualified inline paths (>= 3 segments) and suggests bringing them into scope with `use`.<br><br>**Bad:** `let x: std::io::Result<()> = ...`<br>**Good:** `use std::io; let x: io::Result<()> = ...` | No |
-| **`prefer_vec_macro`** | Enforces the use of `vec![]` over `Vec::new()` for non-mutable initializers (unless turbofish is used like `Vec::<u32>::new()`).<br><br>**Bad:** `let v: Vec<u32> = Vec::new();`<br>**Good:** `let v: Vec<u32> = vec![];` | Yes |
+| Lint | Description | Rationale | Auto-fixable |
+|------|-------------|-----------|:---:|
+| **`prefer_collect_turbofish`** | Enforces the use of turbofish syntax for `Iterator::collect()` instead of explicit `let` type annotations.<br><br>**Bad:** `let x: Vec<u32> = iter.collect();`<br>**Good:** `let x = iter.collect::<Vec<u32>>();` | Keeps the destination type next to the operation that produces it, instead of splitting it across the `let` binding and initializer. | Yes |
+| **`literal_suffix`** | Enforces the use of suffixed numeric literals over explicit type annotations.<br><br>**Bad:** `let x: f32 = 0.0;`<br>**Good:** `let x = 0.0f32;` | Keeps primitive numeric type information on the literal itself and removes redundant local annotations. | Yes |
+| **`minimal_imports`** | Prevents deeply nested, fully-qualified inline paths (>= 3 segments) and suggests bringing them into scope with `use`.<br><br>**Bad:** `let x: std::io::Result<()> = ...`<br>**Good:** `use std::io; let x: io::Result<()> = ...` | Avoids noisy inline paths while still keeping enough context at the use site. | No |
+| **`prefer_vec_macro`** | Enforces the use of `vec![]` over `Vec::new()` unless turbofish is used like `Vec::<u32>::new()`.<br><br>**Bad:** `let mut validators = Vec::new();`<br>**Good:** `let mut validators = vec![];` | Keeps empty vector construction visually aligned with non-empty `vec![...]` construction. This is a style lint, not an empty-vector performance lint. | Yes |
 
 ## Behavior Notes
 
 These lints are intentionally conservative around generated code:
 
 - `minimal_imports` skips macro/proc-macro generated paths, root-marker paths, and underscore-prefixed helper paths such as `_serde::...`.
-- `prefer_vec_macro` skips mutable local initializers such as `let mut values = Vec::new();`, since those are commonly accumulator vectors that are filled later.
+- `prefer_vec_macro` flags typed and mutable local initializers such as `let v: Vec<u32> = Vec::new();` and `let mut values = Vec::new();`, but still skips explicit turbofish calls such as `Vec::<u32>::new()`.
+- In Rust's standard library source, empty `vec![]` expands directly to `Vec::new()`. The special internal path using `write_box_via_move` applies to non-empty `vec![a, b, ...]` construction to improve stack usage for unoptimized programs constructing large vectors: <https://doc.rust-lang.org/src/alloc/macros.rs.html#42-61>.
 
 ## Prerequisites
 

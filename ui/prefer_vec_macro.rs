@@ -1,9 +1,9 @@
 fn main() {
     let _a: Vec<i32> = Vec::new();
 
-    // Mutable accumulator vectors should NOT be linted.
-    let mut _b = Vec::new();
-    _b.push(1);
+    // Mutable accumulator vectors should be linted too.
+    let mut validators = Vec::new();
+    validators.push(1);
 
     // With explicit type, should NOT be linted
     let _c = Vec::<u32>::new();
