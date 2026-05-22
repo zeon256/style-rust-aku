@@ -1,0 +1,22 @@
+warning: avoid calling tracing macro `info!` through `tracing::`
+  --> $DIR/tracing_macro_imports.rs:24:5
+   |
+LL |     tracing::info!("hello");
+   |     ^^^^^^^^^^^^^ help: import `tracing::info` and call the macro directly: `info`
+   |
+   = note: `#[warn(tracing_macro_imports)]` on by default
+
+warning: avoid calling tracing macro `warn!` through `tracing::`
+  --> $DIR/tracing_macro_imports.rs:25:5
+   |
+LL |     tracing::warn!(target: "app", "hello");
+   |     ^^^^^^^^^^^^^ help: import `tracing::warn` and call the macro directly: `warn`
+
+warning: avoid calling tracing macro `error!` through `tracing::`
+  --> $DIR/tracing_macro_imports.rs:26:5
+   |
+LL |     ::tracing::error!("hello");
+   |     ^^^^^^^^^^^^^^^^ help: import `tracing::error` and call the macro directly: `error`
+
+warning: 3 warnings emitted
+
