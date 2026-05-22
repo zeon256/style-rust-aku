@@ -19,40 +19,40 @@ declare_lint_pass!(PreferVecMacro => [PREFER_VEC_MACRO]);
 
 impl<'tcx> LateLintPass<'tcx> for PreferVecMacro {
     fn check_expr(&mut self, cx: &LateContext<'tcx>, expr: &'tcx Expr<'tcx>) {
-        if let ExprKind::Call(func, []) = expr.kind {
-            if is_path_diagnostic_item(cx, func, sym::vec_new) {
-                // Check if it has any generic arguments (e.g. `Vec::<u32>::new()`).
-                let has_turbofish = match func.kind {
-                    ExprKind::Path(QPath::Resolved(_, path)) => {
-                        path.segments.iter().any(|seg| seg.args.is_some())
-                    }
-                    ExprKind::Path(QPath::TypeRelative(ty, segment)) => {
-                        segment.args.is_some()
-                            || match ty.kind {
-                                TyKind::Path(QPath::Resolved(_, path)) => {
-                                    path.segments.iter().any(|seg| seg.args.is_some())
-                                }
-                                _ => true, // Conservatively skip if complex type is used
-                            }
-                    }
-                    _ => false,
-                };
-
-                if !has_turbofish
-                    && !expr.span.from_expansion()
-                    && !expr.span.in_external_macro(cx.sess().source_map())
-                    && !is_from_proc_macro(cx, expr)
-                {
-                    span_lint_and_sugg(
-                        cx,
-                        PREFER_VEC_MACRO,
-                        expr.span,
-                        "consider using the `vec![]` macro",
-                        "replace with",
-                        "vec![]".to_string(),
-                        Applicability::MachineApplicable,
-                    );
+        if let ExprKind::Call(func, []) = expr.kind
+            && is_path_diagnostic_item(cx, func, sym::vec_new)
+        {
+            // Check if it has any generic arguments (e.g. `Vec::<u32>::new()`).
+            let has_turbofish = match func.kind {
+                ExprKind::Path(QPath::Resolved(_, path)) => {
+                    path.segments.iter().any(|seg| seg.args.is_some())
                 }
+                ExprKind::Path(QPath::TypeRelative(ty, segment)) => {
+                    segment.args.is_some()
+                        || match ty.kind {
+                            TyKind::Path(QPath::Resolved(_, path)) => {
+                                path.segments.iter().any(|seg| seg.args.is_some())
+                            }
+                            _ => true, // Conservatively skip if complex type is used
+                        }
+                }
+                _ => false,
+            };
+
+            if !has_turbofish
+                && !expr.span.from_expansion()
+                && !expr.span.in_external_macro(cx.sess().source_map())
+                && !is_from_proc_macro(cx, expr)
+            {
+                span_lint_and_sugg(
+                    cx,
+                    PREFER_VEC_MACRO,
+                    expr.span,
+                    "consider using the `vec![]` macro",
+                    "replace with",
+                    "vec![]".to_string(),
+                    Applicability::MachineApplicable,
+                );
             }
         }
     }
