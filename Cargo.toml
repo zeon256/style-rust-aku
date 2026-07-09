@@ -8,11 +8,11 @@ publish = false
 crate-type = ["cdylib"]
 
 [dependencies]
-clippy_utils = { git = "https://github.com/rust-lang/rust-clippy", rev = "20ce69b9a63bcd2756cd906fe0964d1e901e042a" }
-dylint_linting = "5.0.0"
+clippy_utils = { git = "https://github.com/rust-lang/rust-clippy", rev = "09382ed3c34e091d7705f96964e303b59978533c" }
+dylint_linting = "6.0.1"
 
 [dev-dependencies]
-dylint_testing = "5.0.0"
+dylint_testing = "6.0.1"
 
 [package.metadata.rust-analyzer]
 rustc_private = true

@@ -1,5 +1,5 @@
 use clippy_utils::diagnostics::span_lint_and_then;
-use clippy_utils::is_trait_method;
+use clippy_utils::res::{MaybeDef, MaybeTypeckRes};
 use clippy_utils::source::snippet_opt;
 use rustc_errors::Applicability;
 use rustc_hir::{ExprKind, LetStmt};
@@ -26,7 +26,7 @@ impl<'tcx> LateLintPass<'tcx> for PreferCollectTurbofish {
         let ExprKind::MethodCall(path, _receiver, _args, _span) = init.kind else { return; };
         if path.ident.name.as_str() != "collect" { return; }
 
-        if !is_trait_method(cx, init, sym::Iterator) { return; }
+        if !cx.ty_based_def(init).opt_parent(cx).is_diag_item(cx, sym::Iterator) { return; }
 
         if path.args.is_some() { return; }
 

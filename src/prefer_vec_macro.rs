@@ -1,11 +1,11 @@
 use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::is_from_proc_macro;
-use clippy_utils::is_path_diagnostic_item;
+use clippy_utils::res::{MaybeDef, MaybeQPath};
+use clippy_utils::sym;
 use rustc_errors::Applicability;
 use rustc_hir::{Expr, ExprKind, QPath, TyKind};
 use rustc_lint::{LateContext, LateLintPass, LintContext};
 use rustc_session::{declare_lint, declare_lint_pass};
-use rustc_span::sym;
 
 declare_lint! {
     /// ### What it does
@@ -20,7 +20,7 @@ declare_lint_pass!(PreferVecMacro => [PREFER_VEC_MACRO]);
 impl<'tcx> LateLintPass<'tcx> for PreferVecMacro {
     fn check_expr(&mut self, cx: &LateContext<'tcx>, expr: &'tcx Expr<'tcx>) {
         if let ExprKind::Call(func, []) = expr.kind
-            && is_path_diagnostic_item(cx, func, sym::vec_new)
+            && func.res(cx).is_diag_item(cx, sym::vec_new)
         {
             // Check if it has any generic arguments (e.g. `Vec::<u32>::new()`).
             let has_turbofish = match func.kind {

@@ -37,11 +37,11 @@ pub fn register_lints(_sess: &rustc_session::Session, lint_store: &mut rustc_lin
         prefer_vec_macro::PREFER_VEC_MACRO,
         tracing_macro_imports::TRACING_MACRO_IMPORTS,
     ]);
-    lint_store.register_pre_expansion_pass(|| Box::new(tracing_macro_imports::TracingMacroImports));
-    lint_store.register_late_pass(|_| Box::new(turbofish_collect::PreferCollectTurbofish));
-    lint_store.register_late_pass(|_| Box::new(minimal_imports::MinimalImports));
-    lint_store.register_late_pass(|_| Box::new(literal_suffix::LiteralSuffix));
-    lint_store.register_late_pass(|_| Box::new(prefer_vec_macro::PreferVecMacro));
+    lint_store.register_pre_expansion_lint_pass(Box::new(|| Box::new(tracing_macro_imports::TracingMacroImports)));
+    lint_store.register_late_lint_pass(Box::new(|_: rustc_middle::ty::TyCtxt<'_>| Box::new(turbofish_collect::PreferCollectTurbofish)));
+    lint_store.register_late_lint_pass(Box::new(|_: rustc_middle::ty::TyCtxt<'_>| Box::new(minimal_imports::MinimalImports)));
+    lint_store.register_late_lint_pass(Box::new(|_: rustc_middle::ty::TyCtxt<'_>| Box::new(literal_suffix::LiteralSuffix)));
+    lint_store.register_late_lint_pass(Box::new(|_: rustc_middle::ty::TyCtxt<'_>| Box::new(prefer_vec_macro::PreferVecMacro)));
 }
 
 #[test]
