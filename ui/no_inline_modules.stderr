@@ -1,0 +1,40 @@
+warning: inline test module bodies are not allowed; move the body to the standalone module file and preserve this module's attributes and visibility
+  --> $DIR/no_inline_modules.rs:7:11
+   |
+LL |   mod tests {
+   |  ___________^
+LL | |     fn helper() {}
+LL | | }
+   | |_^ help: replace the module body with: `;`
+   |
+   = note: `#[warn(no_inline_modules)]` on by default
+
+warning: inline test module bodies are not allowed; move the body to the standalone module file and preserve this module's attributes and visibility
+  --> $DIR/no_inline_modules.rs:12:17
+   |
+LL |   mod other_tests {
+   |  _________________^
+LL | |     fn helper() {}
+LL | | }
+   | |_^ help: replace the module body with: `;`
+
+warning: inline test module bodies are not allowed; move the body to the standalone module file and preserve this module's attributes and visibility
+  --> $DIR/no_inline_modules.rs:25:12
+   |
+LL |   mod checks {
+   |  ____________^
+LL | |     #[test]
+LL | |     fn catches() {}
+LL | | }
+   | |_^ help: replace the module body with: `;`
+
+warning: Rust test functions belong in `tests.rs`, `*_tests.rs`, or `tests/**/*.rs`; move this test to one of those standalone test files
+  --> $DIR/no_inline_modules.rs:27:5
+   |
+LL |     fn catches() {}
+   |     ^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(no_tests_outside_test_files)]` on by default
+
+warning: 4 warnings emitted
+

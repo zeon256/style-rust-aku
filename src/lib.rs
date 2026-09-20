@@ -25,6 +25,8 @@ pub mod minimal_imports;
 pub mod literal_suffix;
 pub mod prefer_vec_macro;
 pub mod tracing_macro_imports;
+pub mod no_inline_modules;
+pub mod no_tests_outside_test_files;
 
 dylint_linting::dylint_library!();
 
@@ -36,8 +38,12 @@ pub fn register_lints(_sess: &rustc_session::Session, lint_store: &mut rustc_lin
         literal_suffix::LITERAL_SUFFIX,
         prefer_vec_macro::PREFER_VEC_MACRO,
         tracing_macro_imports::TRACING_MACRO_IMPORTS,
+        no_inline_modules::NO_INLINE_MODULES,
+        no_tests_outside_test_files::NO_TESTS_OUTSIDE_TEST_FILES,
     ]);
     lint_store.register_pre_expansion_lint_pass(Box::new(|| Box::new(tracing_macro_imports::TracingMacroImports)));
+    lint_store.register_pre_expansion_lint_pass(Box::new(|| Box::new(no_inline_modules::NoInlineModules)));
+    lint_store.register_pre_expansion_lint_pass(Box::new(|| Box::new(no_tests_outside_test_files::NoTestsOutsideTestFiles)));
     lint_store.register_late_lint_pass(Box::new(|_: rustc_middle::ty::TyCtxt<'_>| Box::new(turbofish_collect::PreferCollectTurbofish)));
     lint_store.register_late_lint_pass(Box::new(|_: rustc_middle::ty::TyCtxt<'_>| Box::new(minimal_imports::MinimalImports)));
     lint_store.register_late_lint_pass(Box::new(|_: rustc_middle::ty::TyCtxt<'_>| Box::new(literal_suffix::LiteralSuffix)));

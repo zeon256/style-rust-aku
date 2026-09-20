@@ -1,0 +1,34 @@
+warning: Rust test functions belong in `tests.rs`, `*_tests.rs`, or `tests/**/*.rs`; move this test to one of those standalone test files
+  --> $DIR/no_tests_outside_test_files.rs:8:1
+   |
+LL | fn t() {}
+   | ^^^^^^^^^
+   |
+   = note: `#[warn(no_tests_outside_test_files)]` on by default
+
+warning: Rust test functions belong in `tests.rs`, `*_tests.rs`, or `tests/**/*.rs`; move this test to one of those standalone test files
+  --> $DIR/no_tests_outside_test_files.rs:13:1
+   |
+LL | fn t2() {}
+   | ^^^^^^^^^^
+
+warning: Rust test functions belong in `tests.rs`, `*_tests.rs`, or `tests/**/*.rs`; move this test to one of those standalone test files
+  --> $DIR/no_tests_outside_test_files.rs:19:5
+   |
+LL |     fn m(&self) {}
+   |     ^^^^^^^^^^^^^^
+
+warning: Rust test functions belong in `tests.rs`, `*_tests.rs`, or `tests/**/*.rs`; move this test to one of those standalone test files
+  --> $DIR/no_tests_outside_test_files.rs:24:5
+   |
+LL |     fn mt(&self) {}
+   |     ^^^^^^^^^^^^^^^
+
+warning: Rust test functions belong in `tests.rs`, `*_tests.rs`, or `tests/**/*.rs`; move this test to one of those standalone test files
+  --> $DIR/no_tests_outside_test_files.rs:28:1
+   |
+LL | async fn t3() {}
+   | ^^^^^^^^^^^^^^^^
+
+warning: 5 warnings emitted
+
